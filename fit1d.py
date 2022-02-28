@@ -50,7 +50,7 @@ class MySolvers() :
         self.A.append([1, x])
 
     def solveLSQ(self):
-        if len(self.y) > 4:
+        if len(self.y) > 2:
             self.p = np.linalg.lstsq(self.A, self.y, rcond=None)[0]
             self.C = self.p[0]
             self.M = self.p[1]
@@ -61,7 +61,7 @@ class MySolvers() :
 
 
     def solveOptimize(self):
-        if len(self.y) > 4:
+        if len(self.y) > 2:
             self.p = curve_fit(myLine, self.x,  self.y)[0]
             self.C = self.p[0]
             self.M = self.p[1]
