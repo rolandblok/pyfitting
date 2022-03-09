@@ -4,7 +4,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 import math
 from scipy.optimize import curve_fit
-
+import statistics
 
 
 # fit y = C + M x
@@ -78,6 +78,34 @@ class MySolvers() :
         x = myLineInv(y,self.C, self.M)
         return x
 
+    def printCalibMatrix(self):
+        print("M [ {:6.3f} ]".format(self.M))
+        print("C [ {:6.3f} ]".format(self.C))
+
+
+    def printResiduals(self):
+        print("    x:      y :      ym      :     dy")
+        for i in range(len(self.x)):
+            x = self.x[i]
+            y = self.y[i]
+            ym = self.evalX2Y(self.x[i])
+            dy = ( y - ym )
+            print(" {:7.3f} {:7.3f} : {:7.3f} : {:7.3f}  ".format(x,y,ym, dy ))
+
+
+    def printResidualsStatistics(self):
+        dy = []
+        for i in range(len(self.x)):
+            ym = self.evalX2Y(self.x[i])
+            dy.append( self.y[i] - ym )
+        stdy = statistics.stdev(dy)
+        dya = np.abs(dy)
+        maxy = max(dya)
+        miny = min(dya)
+
+        print("std = {:6.3f} ".format(stdy))
+        print("min = {:6.3f} ".format(miny))
+        print("max = {:6.3f} ".format(maxy))
 
 
 
@@ -102,7 +130,14 @@ if __name__ == '__main__':
     plt.plot(x,y, "ob")
     
     lsq_line.solveLSQ()
+    print("LSQ")
+    lsq_line.printResiduals()
+    lsq_line.printResidualsStatistics()
+
     opt_line.solveOptimize()
+    print("optimize")
+    opt_line.printResiduals()
+    opt_line.printResidualsStatistics()
 
     xs= np.arange(-5,6,1)
     ylsq = lsq_line.evalX2Y(xs)
